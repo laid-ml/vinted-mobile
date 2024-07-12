@@ -14,6 +14,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { useState } from "react";
 import { router } from "expo-router";
+import { useContext } from "react";
+import { AuthContext } from "../../context/auth";
 
 export default function HomePage() {
   return (
@@ -23,7 +25,7 @@ export default function HomePage() {
     >
       <SafeAreaView style={styles.mainView}>
         <Image
-          source={require("../assets/logo.png")}
+          source={require("../../assets/logo.png")}
           style={styles.img}
           resizeMode="contain"
         />

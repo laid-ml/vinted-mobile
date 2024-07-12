@@ -1,29 +1,26 @@
-import { Stack } from "expo-router";
-import logo from "../assets/logo.png";
-import { Image } from "react-native";
+import { Slot, router } from "expo-router";
+import { AuthComp, AuthContext } from "../context/auth";
+import { useContext, useEffect } from "react";
 
-const Layout = () => {
-  const LogoTitle = () => {
-    return (
-      <Image
-        source={require("../assets/logo.png")}
-        style={{ height: 50, width: 50, marginRight: 300 }}
-        resizeMode="contain"
-      />
-    );
-  };
+export default RootLayout = () => {
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          headerTitle: (props) => <LogoTitle {...props} />,
-        }}
-      />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="signup" />
-    </Stack>
+    <AuthComp>
+      <SlotProvider />
+    </AuthComp>
   );
 };
 
-export default Layout;
+const SlotProvider = () => {
+  const { userToken, userId } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!userId && !userToken) {
+      router.replace("/");
+    }
+    if (userId && userToken) {
+      router.replace("/home");
+    }
+  }, [userToken, userId]);
+
+  return <Slot />;
+};

@@ -12,14 +12,40 @@ import {
   Pressable,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from "axios";
+import Constants from "expo-constants";
 
 import { useState } from "react";
 import { router } from "expo-router";
+import { useContext } from "react";
+import { AuthContext } from "../../context/auth";
 
-const Signup = () => {
+const Login = () => {
+  const { setTokenAndId } = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        "https://lereacteur-vinted-api.herokuapp.com/user/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.data.token && response.data._id) {
+        setTokenAndId(response.data.token, response.data._id);
+      } else {
+        console.log("error setting token and id");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <KeyboardAwareScrollView
       style={{ flex: 1 }}
@@ -27,7 +53,7 @@ const Signup = () => {
     >
       <SafeAreaView style={styles.mainView}>
         <Image
-          source={require("../assets/logo.png")}
+          source={require("../../assets/logo.png")}
           style={styles.img}
           resizeMode="contain"
         />
@@ -37,14 +63,7 @@ const Signup = () => {
             setEmail(text);
           }}
           value={email}
-        />
-        <TextInput
-          placeholder="username"
-          secureTextEntry={true}
-          onChangeText={(text) => {
-            setUsername(text);
-          }}
-          value={username}
+          style={{ width: "90%" }}
         />
         <TextInput
           placeholder="password"
@@ -53,9 +72,11 @@ const Signup = () => {
             setPassword(text);
           }}
           value={password}
+          style={{ width: "90%" }}
         />
+        {/* <Button text={"Sign in"} onPressFun={handleSubmit} /> */}
 
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={handleSubmit}>
           <Text style={{ color: "white" }}>se connecter</Text>
         </Pressable>
       </SafeAreaView>
@@ -82,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Signup;
+export default Login;
